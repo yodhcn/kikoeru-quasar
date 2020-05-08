@@ -5,6 +5,7 @@ import Works from 'pages/Works'
 import Work from 'pages/Work'
 import List from 'pages/List'
 import Login from 'pages/Login'
+import PlayList from 'pages/PlayList'
 
 import Folders from 'pages/Dashboard/Folders'
 import Scanner from 'pages/Dashboard/Scanner'
@@ -41,6 +42,12 @@ const routes = [
     children: [
       {
         path: '',
+        redirect: {
+          path: 'works'
+        }
+      },
+      {
+        path: 'works',
         component: Works
       },
       {
@@ -52,7 +59,7 @@ const routes = [
         component: Works
       },
       {
-        path: 'circle/:id',
+        path: '/circle/:id',
         props: { restrict: "circle" },
         component: Works
       },
@@ -80,6 +87,16 @@ const routes = [
         path: 'vas',
         props: { restrict: "va" },
         component: List
+      },
+      {
+        path: 'playlist',
+        component: PlayList,
+        children: [
+          {
+            path: 'add',
+            component: Works
+          }
+        ]
       }
     ],
     meta: {

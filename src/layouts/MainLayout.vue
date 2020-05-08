@@ -1,8 +1,10 @@
 <template>
-  <q-layout view="lHh lpr lFf">
+  <q-layout view="hHh Lpr lff" class="bg-grey-3">
     <q-header class="shadow-4">
       <q-toolbar>
-        <q-toolbar-title >
+        <q-btn flat dense round @click="drawerOpen = !drawerOpen" icon="menu" aria-label="Menu" />
+
+        <q-toolbar-title class="gt-xs">
           <router-link :to="'/'" class="text-white">
             Kikoeru
           </router-link>
@@ -15,18 +17,57 @@
           </template>
         </q-input>
 
-        <q-btn flat dense round @click="rightDrawerOpen = !rightDrawerOpen" icon="menu" aria-label="Menu"/>
+        
       </q-toolbar>
       
       <AudioPlayer />
     </q-header>
 
-    <q-drawer overlay elevated v-model="rightDrawerOpen" side="right">
-      <NavBar :links="links" />      
+    <q-drawer
+      v-model="drawerOpen"
+      show-if-above
+
+      :mini="miniState"
+      @mouseover="miniState = false"
+      @mouseout="miniState = true"
+      mini-to-overlay
+
+      :width="230"
+      :breakpoint="500"
+      bordered
+      content-class="bg-grey-1"
+    >
+      <q-scroll-area class="fit">
+        <q-list>
+          <q-item 
+            clickable
+            v-ripple
+            exact
+            :to="link.path"
+            active-class="text-deep-purple text-weight-medium"
+            v-for="(link, index) in links"
+            :key="index"
+            @click="miniState = true"
+          >
+            <q-item-section avatar>
+              <q-icon :name="link.icon" />
+            </q-item-section>
+
+            <q-item-section>
+              <q-item-label class="text-subtitle1">
+                {{link.title}}
+              </q-item-label>
+            </q-item-section>
+          </q-item>
+        </q-list>
+      </q-scroll-area>
     </q-drawer>
 
     <q-page-container>
-      <router-view />
+      <!-- <q-page padding> -->
+        <router-view class="page-content" />
+      <!-- </q-page> -->
+      
     </q-page-container>
 
     <q-footer bordered elevated class="bg-white text-black q-pa-none" >
@@ -52,10 +93,11 @@ export default {
   data () {
     return {
       keyword: '',
-      rightDrawerOpen: false,
+      drawerOpen: false,
+      miniState: true,
       links: [
         {
-          title: 'Works',
+          title: '媒体库',
           icon: 'widgets',
           path: '/'
         },
@@ -73,6 +115,11 @@ export default {
           title: 'VAs',
           icon: 'mic',
           path: '/vas'
+        },
+        {
+          title: 'Playlist',
+          icon: 'mic',
+          path: '/playlist'
         }
       ]
     }
@@ -86,6 +133,7 @@ export default {
 
   created () {
     this.initUser()
+    this.$store.dispatch('PlayList/GET_USER_PLAY_LISTS')
   },
 
   methods: {
@@ -144,4 +192,6 @@ export default {
   a {
    text-decoration:none;
   }
+
+  
 </style>

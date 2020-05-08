@@ -41,11 +41,11 @@
             transition-hide="jump-up"
           >
             <q-list separator>
-              <q-item clickable @click="addToQueue(item)">
+              <q-item clickable v-close-popup @click="addToQueue(item)">
                 <q-item-section>添加到播放列表</q-item-section>
               </q-item>
 
-              <q-item clickable @click="playNext(item)">
+              <q-item clickable v-close-popup @click="playNext(item)">
                 <q-item-section>下一曲播放</q-item-section>
               </q-item>
             </q-list>

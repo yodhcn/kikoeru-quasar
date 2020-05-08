@@ -7,7 +7,7 @@
       </span>
     </div>
     
-    <div :class="`row justify-center ${listMode ? 'list' : 'q-mx-md'}`">
+    <div :class="`row justify-center  `">
       <q-infinite-scroll @load="onLoad" :offset="250" :disable="stopLoad" style="max-width: 1350px;" class="col">
         <div v-show="works.length" class="row justify-between q-mb-md q-mx-xs">
           <!-- 排序选择框 -->
@@ -41,10 +41,12 @@
             class="col-auto"
           />
         </div>
-        
-        <q-list v-if="listMode" bordered separator class="shadow-2">
+
+        <div v-if="listMode" class="list ">
+        <q-list bordered separator class="shadow-2">
           <WorkListItem v-for="work in works" :key="work.id" :workid="work.id" class="fit" />
         </q-list>
+        </div>
 
         <div v-else class="row q-col-gutter-x-md q-col-gutter-y-lg">
           <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" v-for="work in works" :key="work.id">
