@@ -12,7 +12,10 @@
         </q-item-section>
       </q-item>
 
-      <q-btn flat size="lg" :icon="playingIcon" @click="togglePlaying()" style="height: 60px; width: 60px" class="col-auto" />
+      <q-btn flat size="lg" @click="togglePlaying()" style="height: 60px; width: 60px" class="col-auto">
+        <q-icon v-if="playing" name="pause" />
+        <q-icon v-else name="play_arrow" />
+      </q-btn>
     </div>
   </q-slide-transition>
 </template>
@@ -29,10 +32,6 @@ export default {
       const token = this.$q.localStorage.getItem('jwt-token') || ''
       const hash = this.currentPlayingFile.hash
       return hash ? `/api/cover/${hash.split('/')[0]}?type=sam&token=${token}` : ""
-    },
-
-    playingIcon () {
-      return this.playing ? "pause" : "play_arrow"
     },
 
     ...mapState('AudioPlayer', [

@@ -25,11 +25,24 @@
 
         <!-- 播放按钮控件 -->
         <div class="row justify-around" style="height: 65px">
+          <!-- 播放列表 -->
           <q-btn flat dense size="md" icon="queue_music" @click="showCurrentPlayList = !showCurrentPlayList" style="width: 55px" class="col-auto" />
+          <!-- 上一曲 -->
           <q-btn flat dense size="lg" icon="skip_previous" @click="previousTrack()" style="width: 55px" class="col-auto" />
-          <q-btn flat dense size="28px" :icon="playingIcon" @click="togglePlaying()" style="width: 65px" class="col-auto" />
+          <!-- 播放/暂停 -->
+          <q-btn flat dense size="28px" @click="togglePlaying()" style="width: 65px" class="col-auto">
+            <q-icon v-if="playing" name="pause" />
+            <q-icon v-else name="play_arrow" />
+          </q-btn>
+          <!-- 下一曲 -->
           <q-btn flat dense size="lg" icon="skip_next" @click="nextTrack()" style="width: 55px" class="col-auto" />
-          <q-btn flat dense size="md" :icon="playModeIcon" @click="changePlayMode()" style="width: 55px" class="col-auto" />
+          <!-- 播放模式 -->
+          <q-btn flat dense size="md" @click="changePlayMode()" style="width: 55px" class="col-auto">
+            <q-icon v-if="playMode.name === 'all repeat'" name="repeat" />
+            <q-icon v-else-if="playMode.name === 'repeat once'" name="repeat_one" />
+            <q-icon v-else-if="playMode.name === 'shuffle'" name="shuffle" />
+            <q-icon v-else name="playlist_play" />
+          </q-btn>
         </div>
 
         <!-- 音量控件 -->
@@ -167,23 +180,6 @@ export default {
         return this.$store.state.AudioPlayer.queue
       },
       set () {}
-    },
-
-    playModeIcon () {
-      switch (this.playMode.name) {
-        case "all repeat":
-          return "repeat"
-        case "repeat once":
-          return "repeat_one"
-        case "shuffle":
-          return "shuffle"
-        default:
-          return "playlist_play"
-      }
-    },
-
-    playingIcon () {
-      return this.playing ? "pause" : "play_arrow"
     },
 
     ...mapState('AudioPlayer', [

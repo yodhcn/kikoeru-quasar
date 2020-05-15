@@ -1,6 +1,6 @@
 <template>
   <div class=" ">
-    <q-header :class="['shadow-1', { 'bg-dark': mode }]">
+    <q-header elevated :class="[{ 'bg-dark': mode }]">
       <q-toolbar>
         <!-- 左侧按钮 -->
         <q-btn flat round dense icon="menu" v-if="!mode" @click="SET_DRAWER(true)" class="xs" />
@@ -35,9 +35,6 @@
           <!-- 确认按钮 -->
           <q-btn dense color="primary" label="完成" v-if="mode" v-close-popup />
         </div>
-        
-
-        
       </q-toolbar>
 
       <!-- 搜索栏 -->
@@ -64,7 +61,7 @@
     </div>
     
     <q-infinite-scroll @load="onLoad" :offset="250" :disable="stopLoad">
-      <div class="row justify-center ">
+      <div v-if="works.length" class="row justify-center ">
         <q-list bordered separator v-if="listView" class="shadow-1 full-width" style="max-width: 880px;">
           <WorkListItem v-for="work in works" :key="work.id" :workid="work.id" class="" />
         </q-list>
@@ -137,8 +134,7 @@ export default {
   data () {
     return {
       keyword: '',
-      listView: true,
-      listMode: false,
+      listView: false,
       stopLoad: false,
       works: [],
       pageTitle: '',
@@ -207,8 +203,8 @@ export default {
 
   computed: {
     url () {
-      if (this.$route.params.keyword) {
-        return `/api/search/${this.$route.params.keyword}`
+      if (this.keyword) {
+        return `/api/search/${this.keyword}`
       } else if (this.$route.params.id) {
         return `/api/${this.restrict}/${this.$route.params.id}`
       } else {

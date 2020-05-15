@@ -62,7 +62,7 @@
       <router-view class="page-content" />
     </q-page-container>
 
-    <q-footer bordered elevated class="bg-white text-black q-pa-none" >
+    <q-footer elevated class="bg-white text-black q-pa-none">
       <PlayerBar />
       <AudioPlayer />
     </q-footer>

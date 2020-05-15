@@ -1,6 +1,6 @@
 <template>
   <div class="">
-    <q-header class="shadow-1">
+    <q-header elevated>
       <q-toolbar>
         <!-- 左侧按钮 -->
         <q-btn flat round dense icon="menu" @click="SET_DRAWER(true)" class="xs" />
