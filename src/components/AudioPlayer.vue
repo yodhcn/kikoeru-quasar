@@ -80,7 +80,7 @@
                 style="height: 48px; padding: 0px 10px;"
                 @click="onClickTrack(index)"
               >
-                <q-item-section side v-show="editCurrentPlayList">
+                <q-item-section side v-if="editCurrentPlayList">
                   <q-icon name="clear" :color="queueIndex === index ? 'white' : 'red'" @click="removeFromQueue(index)" />
                 </q-item-section>
 

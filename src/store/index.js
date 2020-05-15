@@ -4,6 +4,8 @@ import Vuex from 'vuex'
 import AudioPlayer from './module-AudioPlayer'
 import User from './module-User'
 import PlayList from './module-PlayList'
+import play from './play'
+import mylist from './mylist'
 
 Vue.use(Vuex)
 
@@ -21,7 +23,9 @@ export default function (/* { ssrContext } */) {
     modules: {
       AudioPlayer,
       User,
-      PlayList
+      PlayList,
+      play,
+      mylist
     },
 
     // enable strict mode (adds overhead!)

@@ -26,10 +26,18 @@
     </q-card>
 
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
-      <q-btn fab icon="add" color="accent" />
+      <q-btn fab icon="add" color="accent" to="/playlist/add" @click="isEditMode = true" />
     </q-page-sticky>
     
-    <router-view />
+    <q-dialog maximized transition-show="slide-up" transition-hide="slide-down" v-model="isEditMode" >
+      <q-card class="picker">
+        <q-layout view="lHh Lpr lFf" container class="bg-grey-3">
+          <q-page-container>
+            <router-view />
+          </q-page-container>
+        </q-layout>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
@@ -45,7 +53,8 @@ export default {
 
   data () {
     return {
-      editPlayLists: true
+      editPlayLists: true,
+      isEditMode: false
      
     }
   },
@@ -84,6 +93,21 @@ export default {
       box-shadow: none;
     }
   }
+
+  .picker  {
+    // 宽度 <= $breakpoint-sm (1023px)
+    @media (max-width: $breakpoint-sm) {
+
+    }
+
+    // 宽度 >= $breakpoint-sm (1024px)
+    @media (min-width: $breakpoint-md-min) {
+      height:calc(100% - 100px);
+      width: calc(100% - 100px);
+      // margin:50px
+    }
+  }
+
 
   // .page-content {
   //   // 宽度 > $breakpoint-sm-min

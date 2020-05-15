@@ -1,44 +1,39 @@
 <template>
-  <q-layout view="hHh Lpr lff" class="bg-grey-3">
-    <q-header class="shadow-4">
-      <q-toolbar>
-        <q-btn flat dense round @click="drawerOpen = !drawerOpen" icon="menu" aria-label="Menu" />
-
-        <q-toolbar-title class="gt-xs">
-          <router-link :to="'/'" class="text-white">
-            Kikoeru
-          </router-link>
-        </q-toolbar-title>
-        
-        <q-input dark dense rounded standout v-model="keyword" debounce="500" input-class="text-right" class="q-mr-sm">
-          <template v-slot:append>
-            <q-icon v-if="keyword === ''" name="search" />
-            <q-icon v-else name="clear" class="cursor-pointer" @click="keyword = ''" />
-          </template>
-        </q-input>
-
-        
-      </q-toolbar>
-      
-      <AudioPlayer />
-    </q-header>
-
+  <q-layout view="lHh Lpr lFf" class="bg-color">
     <q-drawer
-      v-model="drawerOpen"
+      v-model="drawer"
+      :mini="miniState"
       show-if-above
 
-      :mini="miniState"
-      @mouseover="miniState = false"
-      @mouseout="miniState = true"
-      mini-to-overlay
-
       :width="230"
-      :breakpoint="500"
+      :breakpoint="599"
       bordered
       content-class="bg-grey-1"
     >
       <q-scroll-area class="fit">
         <q-list>
+          <q-item 
+            clickable
+            v-ripple
+            @click="miniState = !miniState"
+            class="gt-xs"
+          >
+            <q-item-section avatar>
+              <q-icon name="menu" />
+            </q-item-section>
+          </q-item>
+
+          <q-item 
+            clickable
+            v-ripple
+            @click="SET_DRAWER(false)"
+            class="xs"
+          >
+            <q-item-section avatar>
+              <q-icon name="close" />
+            </q-item-section>
+          </q-item>
+
           <q-item 
             clickable
             v-ripple
@@ -63,20 +58,19 @@
       </q-scroll-area>
     </q-drawer>
 
-    <q-page-container>
-      <!-- <q-page padding> -->
-        <router-view class="page-content" />
-      <!-- </q-page> -->
-      
+    <q-page-container>   
+      <router-view class="page-content" />
     </q-page-container>
 
     <q-footer bordered elevated class="bg-white text-black q-pa-none" >
       <PlayerBar />
+      <AudioPlayer />
     </q-footer>
   </q-layout>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import NavBar from 'components/NavBar'
 import PlayerBar from 'components/PlayerBar'
 import AudioPlayer from 'components/AudioPlayer'
@@ -93,13 +87,22 @@ export default {
   data () {
     return {
       keyword: '',
-      drawerOpen: false,
       miniState: true,
       links: [
         {
           title: '媒体库',
           icon: 'widgets',
           path: '/'
+        },
+        {
+          title: '我的列表',
+          icon: 'favorite',
+          path: '/mylist'
+        },
+        {
+          title: '播放列表',
+          icon: 'audiotrack',
+          path: '/playlist'
         },
         {
           title: 'Circles',
@@ -116,12 +119,19 @@ export default {
           icon: 'mic',
           path: '/vas'
         },
-        {
-          title: 'Playlist',
-          icon: 'mic',
-          path: '/playlist'
-        }
+        
       ]
+    }
+  },
+
+  computed: {
+    drawer: {
+      get () {
+        return this.$store.state.play.drawer
+      },
+      set (flag) {
+        return this.$store.commit('play/SET_DRAWER', flag)
+      }
     }
   },
 
@@ -133,7 +143,8 @@ export default {
 
   created () {
     this.initUser()
-    this.$store.dispatch('PlayList/GET_USER_PLAY_LISTS')
+    this.$store.dispatch('PlayList/GET_PLAY_LISTS')
+    this.$store.dispatch('mylist/getMylists')
   },
 
   methods: {
@@ -173,6 +184,10 @@ export default {
         color: 'negative',
         icon: 'bug_report'
       })
+    },
+
+    SET_DRAWER (flag) {
+      this.$store.commit('play/SET_DRAWER', flag)
     }
   },
 
@@ -191,6 +206,23 @@ export default {
 <style lang="scss" scoped>
   a {
    text-decoration:none;
+  }
+
+  .bg-color {
+    // 宽度 >= $breakpoint-sm-min (600px)
+    @media (min-width: $breakpoint-sm-min) {
+      background-color: $grey-3;
+    }
+    // 宽度 <= $breakpoint-xs-max (599px)
+    @media (max-width: $breakpoint-xs-max) {
+      background-color: white;
+    }
+  }
+
+  .aline {
+    // background-color: $grey-6;
+    // height:2px;
+    border-bottom: 1px solid #999;
   }
 
   

@@ -8,14 +8,14 @@
 
     <!-- 标题 -->
     <div class="q-mx-sm text-h6 text-weight-regular ellipsis-2-lines">
-      <router-link :to="`/work/${metadata.id}`" class="text-black">
+      <router-link :to="`${pathPrefix}/work/${metadata.id}`" class="text-black">
         {{ metadata.title }}
       </router-link>
     </div>
     
     <!-- 社团 -->
     <div class="q-ml-sm q-mt-sm q-mb-xs text-subtitle1 text-weight-regular ellipsis">
-      <router-link :to="`/circle/${metadata.circle.id}`" class="text-grey">
+      <router-link :to="`${pathPrefix}/works/circle/${metadata.circle.id}`" class="text-grey">
         {{ metadata.circle.name }} 
       </router-link>
     </div>
@@ -76,7 +76,7 @@
     <div class="q-ma-xs">
       <router-link
         v-for="(tag, index) in metadata.tags"
-        :to="`/tag/${tag.id}`"
+        :to="`${pathPrefix}/works/tag/${tag.id}`"
         :key=index
       >
         <q-chip size="md" class="shadow-2">
@@ -89,7 +89,7 @@
     <div class="q-mx-xs q-my-sm">
       <router-link
         v-for="(va, index) in metadata.vas"
-        :to="`/va/${va.id}`"
+        :to="`${pathPrefix}/works/va/${va.id}`"
         :key=index
       >
         <q-chip square size="md" class="shadow-2" color="teal" text-color="white">
@@ -116,6 +116,9 @@ export default {
     workid: {
       type: Number,
       required: true
+    },
+    mode: {
+      type: String
     }
   },
 
@@ -125,6 +128,16 @@ export default {
         id: this.workid,
         circle: {}
       }
+    }
+  },
+
+  computed: {
+    pathPrefix () {
+      return this.mode ? `/${this.mode.split("-")[1]}/${this.listId}/add` : ''
+    },
+
+    listId () {
+      return this.$route.params.listId
     }
   },
 

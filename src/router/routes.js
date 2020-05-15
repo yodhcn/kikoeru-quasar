@@ -3,9 +3,11 @@ import DashboardLayout from 'layouts/DashboardLayout'
 
 import Works from 'pages/Works'
 import Work from 'pages/Work'
-import List from 'pages/List'
+import Labels from 'pages/Labels'
 import Login from 'pages/Login'
 import PlayList from 'pages/PlayList'
+import MyList from 'pages/MyList'
+import MyListWork from 'pages/MyListWork'
 
 import Folders from 'pages/Dashboard/Folders'
 import Scanner from 'pages/Dashboard/Scanner'
@@ -54,39 +56,87 @@ const routes = [
         path: 'work/:id',
         component: Work
       },
+      // {
+      //   path: 'search/:keyword?',
+      //   component: Works
+      // },
       {
-        path: 'search/:keyword?',
-        component: Works
-      },
-      {
-        path: '/circle/:id',
+        path: 'works/circle/:id',
         props: { restrict: "circle" },
         component: Works
       },
       {
-        path: 'tag/:id',
+        path: 'works/tag/:id',
         props: { restrict: "tag" },
         component: Works
       },
       {
-        path: 'va/:id',
+        path: 'works/va/:id',
         props: { restrict: "va" },
         component: Works
+      },
+      {
+        path: '/mylist',
+        name: 'mylist',
+        component: MyList
+      },
+      {
+        path: '/mylist/:listId',
+        name: 'mylistwork',
+        props: true,
+        component: MyListWork,
+        children: [
+          {
+            path: 'add/works',
+            name: 'mylist-works',
+            component: Works,
+            props: {
+              mode: 'add-mylist'
+            }
+          },
+          {
+            path: 'add/works/circle/:id',
+            name: 'mylist-works-circle',
+            component: Works,
+            props: {
+              mode: 'add-mylist',
+              restrict: 'circle'
+            }
+          },
+          {
+            path: 'add/works/tag/:id',
+            name: 'mylist-works-tag',
+            component: Works,
+            props: {
+              mode: 'add-mylist',
+              restrict: 'tag'
+            }
+          },
+          {
+            path: 'add/works/va/:id',
+            name: 'mylist-works-va',
+            component: Works,
+            props: {
+              mode: 'add-mylist',
+              restrict: 'va'
+            }
+          }
+        ]
       },
       {
         path: 'circles',
         props: { restrict: "circle" },
-        component: List
+        component: Labels
       },
       {
         path: 'tags',
         props: { restrict: "tag" },
-        component: List
+        component: Labels
       },
       {
         path: 'vas',
         props: { restrict: "va" },
-        component: List
+        component: Labels
       },
       {
         path: 'playlist',
@@ -94,7 +144,10 @@ const routes = [
         children: [
           {
             path: 'add',
-            component: Works
+            component: Works,
+            props: {
+              mode: 'add-playlist'
+          }
           }
         ]
       }

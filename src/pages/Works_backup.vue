@@ -1,115 +1,68 @@
 <template>
   <div class=" ">
-    <q-header :class="['shadow-1', { 'bg-dark': mode }]">
-      <q-toolbar>
-        <!-- 左侧按钮 -->
-        <q-btn flat round dense icon="menu" v-if="!mode" @click="SET_DRAWER(true)" class="xs" />
-
-        <!-- 标题 -->
-        <q-toolbar-title class="non-selectable">
-          <span v-if="mode === 'add-mylist'" class="text-body2">添加到我的列表</span>
-          <span v-else-if="mode === 'add-playlist'" class="text-body2">添加到播放列表</span>
-          <span v-else @click="$router.push('/works')" class="text-h6 cursor-pointer">媒体库</span>
-        </q-toolbar-title>
-
-        <!-- 右侧按钮 -->
-        <div class="q-gutter-x-sm row items-center">
-          <!-- 搜索按钮 -->
-          <q-btn flat round dense icon="search" @click="isShowSearchBox = !isShowSearchBox" class="xs" />
-          <q-input dark dense rounded standout v-model="keyword" debounce="500" input-class="text-right" class="gt-xs">
-            <template v-slot:append>
-              <q-icon v-if="keyword === ''" name="search" />
-              <q-icon v-else name="clear" @click="keyword = ''" />
-            </template>
-          </q-input>
-
-          <!-- 视图切换按钮 -->
-          <q-btn flat round dense @click="listView = !listView">
-            <q-icon v-if="listView" name="apps" />
-            <q-icon v-else name="view_list" />
-          </q-btn>
-
-          <!-- 排序按钮 -->
-          <q-btn flat round dense icon="sort" @click="isShowSortBox = true" />
-          
-          <!-- 确认按钮 -->
-          <q-btn dense color="primary" label="完成" v-if="mode" v-close-popup />
-        </div>
-        
-
-        
-      </q-toolbar>
-
-      <!-- 搜索栏 -->
-      <div v-if="isShowSearchBox" class="lt-sm bg-dark">
-        <q-input dark dense rounded standout v-model="keyword" debounce="500" input-class=" " class="q-py-sm q-px-md">
-          <template v-slot:prepend>
-            <q-icon name="search" />
-          </template>
-
-          <template v-slot:append>
-            <q-icon v-if="keyword !== ''" name="clear" @click="keyword = ''" />
-          </template>
-        </q-input>
-      </div>
-    </q-header>
-
-    <div class="text-h6 text-weight-regular q-px-sm q-py-md">
+    <div class="text-h5 text-weight-regular q-ma-md">
       {{pageTitle}}
       <span v-show="pagination.totalCount">
         ({{pagination.totalCount}})
       </span>
-
-      <q-btn flat round dense icon="close" :to="`${pathPrefix}/works`" v-show="restrict" />
     </div>
     
-    <q-infinite-scroll @load="onLoad" :offset="250" :disable="stopLoad">
-      <div class="row justify-center ">
-        <q-list bordered separator v-if="listView" class="shadow-1 full-width" style="max-width: 880px;">
-          <WorkListItem v-for="work in works" :key="work.id" :workid="work.id" class="" />
-        </q-list>
+    <div :class="`row justify-center  `">
+      <q-infinite-scroll @load="onLoad" :offset="250" :disable="stopLoad" style="max-width: 1350px;" class="col">
+        <div v-show="works.length" class="row justify-between q-mb-md q-mx-xs">
+          <!-- 排序选择框 -->
+          <q-select
+            dense
+            rounded
+            outlined
+            bg-color="white"
+            transition-show="scale"
+            transition-hide="scale"
+            v-model="oderOption"
+            :options="options"
+            label="排序"
+            class="col-auto"
+          />
 
-        <div v-else class="col q-px-md row q-col-gutter-x-md q-col-gutter-y-lg" style="max-width: 1350px;">
+          <!-- 切换显示模式按钮 -->
+          <q-btn-toggle
+            dense
+            spread
+            rounded
+            v-model="listMode"
+            toggle-color="primary"
+            color="white"
+            text-color="primary"
+            :options="[
+              { icon: 'apps', value: false },
+              { icon: 'list', value: true }
+            ]"
+            style="width: 85px;"
+            class="col-auto"
+          />
+        </div>
+
+        <div v-if="listMode" class="list ">
+        <q-list bordered separator class="shadow-2">
+          <WorkListItem v-for="work in works" :key="work.id" :workid="work.id" class="fit" />
+        </q-list>
+        </div>
+
+        <div v-else class="row q-col-gutter-x-md q-col-gutter-y-lg">
           <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" v-for="work in works" :key="work.id">
-            <WorkCard :workid="work.id" :mode="mode" class="fit" /> 
+            <WorkCard :workid="work.id" class="fit" /> 
           </div> 
         </div>
-      </div>
-      
-      <div v-show="stopLoad" class="q-mt-lg q-mb-xl text-h6 text-bold text-center">END</div>
+        
+        <div v-show="stopLoad" class="q-mt-lg q-mb-xl text-h6 text-bold text-center">END</div>
 
-      <template v-slot:loading>
-        <div class="row justify-center q-my-md">
-          <q-spinner-dots color="primary" size="40px" />
-        </div>
-      </template>
-    </q-infinite-scroll>
-
-    <q-dialog 
-      v-model="isShowSortBox"
-      transition-show="scale" 
-      transition-hide="fade"
-      style="max-width: 400px;"
-    >
-      <q-card class="full-width">
-        <q-list separator>
-          <q-item
-            clickable
-            v-ripple
-            v-for="option in sortOptions"
-            :key="option.label"
-            :active="option.label === sortOption.label"
-            active-class="text-white bg-teal"
-            class="non-selectable"
-            @click="sortOption = option; isShowSortBox = false;"
-          >
-            <q-item-section>
-              <q-item-label lines="1">{{ option.label }}</q-item-label>
-            </q-item-section>
-          </q-item>
-        </q-list>
-      </q-card>
-    </q-dialog>
+        <template v-slot:loading>
+          <div class="row justify-center q-my-md">
+            <q-spinner-dots color="primary" size="40px" />
+          </div>
+        </template>
+      </q-infinite-scroll>
+    </div>
   </div>
 </template>
 
@@ -127,9 +80,6 @@ export default {
 
   props: {
     restrict: {
-      type: String
-    },
-    mode: {
       type: String
     }
   },
@@ -214,28 +164,16 @@ export default {
       } else {
         return '/api/works'
       }
-    },
-
-    pathPrefix () {
-      return this.mode ? `/${this.mode.split("-")[1]}/${this.listId}/add` : ''
-    },
-
-    listId () {
-      return this.$route.params.listId
     }
   },
 
   watch: {
     url () {
-      this.reset({
-        refreshPageTitle: true
-      })
+      this.reset()
     },
 
-    sortOption () {
-      this.reset({
-        refreshPageTitle: false
-      })
+    oderOption () {
+      this.reset()
     }
   },
 
@@ -314,7 +252,7 @@ export default {
       } 
     },
 
-    reset ({ refreshPageTitle }) {
+    reset () {
       this.stopLoad = true
       if (refreshPageTitle) {
         this.pagination = {}
@@ -337,12 +275,16 @@ export default {
         color: 'negative',
         icon: 'bug_report'
       })
-    },
-
-    SET_DRAWER (flag) {
-      this.$store.commit('play/SET_DRAWER', flag)
     }
   }
 }
 </script>
 
+<style lang="scss" scoped>
+  .list {
+    // 宽度 >= $breakpoint-sm-min
+    @media (min-width: $breakpoint-sm-min) {
+      padding: 0px 20px;
+    }
+  }
+</style>

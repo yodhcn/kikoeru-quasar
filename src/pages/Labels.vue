@@ -25,7 +25,7 @@
 
 <script>
 export default {
-  name: 'List',
+  name: 'Labels',
 
   props: {
     restrict: {

@@ -1,14 +1,12 @@
 export default function () {
   return {
-    playlists: null
+    mylists: null
     // [
       // {
       //   name: null,
-      //   tracks: [
+      //   works: [
       //     {
-      //       hash: null,
-      //       title: null,
-      //       workTitle: null
+      //       id: null
       //     }
       //   ]
       // }
