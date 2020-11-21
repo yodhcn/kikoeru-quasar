@@ -194,10 +194,6 @@ export default {
   beforeRouteUpdate (to, from, next) {
     this.rightDrawerOpen = false
 
-    // 离开搜索页面时清空输入框
-    if (to.path.indexOf('search') === -1) {
-      this.keyword = ''
-    }
     next()
   }
 }
